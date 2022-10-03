@@ -1,21 +1,22 @@
 import React from "react";
 import { useState } from "react";
-import { latin_script_letters } from "../alpabet_store";
+import { latin_alphabet } from "../alpabet_store";
 
 const CaesarCipher = () => {
 
   const [rotate, setRotate] = useState(1)
   const [inputValue, setInputValue] = useState('')
   const [result, setResult] = useState('')
+  const [cryptAction, setCryptAction] = useState('encrypt')
 
-  const compare = (rotate_by, value) => {
-    const cuttedLetters = latin_script_letters.slice(0, rotate_by)
-    const shifted = latin_script_letters.slice(rotate_by, latin_script_letters.length)
+  const encrypt = (rotate_by, value, alphabet) => {
+    const cuttedLetters = alphabet.slice(0, rotate_by)
+    const shifted = alphabet.slice(rotate_by, alphabet.length)
     const merge = [...shifted, ...cuttedLetters]
 
     let indexes = []
 
-    value.toUpperCase().split('').map(value => latin_script_letters.map((element, latinIndex) => {
+    value.toUpperCase().split('').map((value) => alphabet.map((element, latinIndex) => {
       return value === element ? indexes.push(latinIndex) : null
     }))
 
@@ -26,10 +27,35 @@ const CaesarCipher = () => {
     }
 
   }
+
+  const decrypt = (rotate_by, value, alphabet) => {
+    const cuttedLetters = alphabet.slice(0, rotate_by)
+    const shifted = alphabet.slice(rotate_by, alphabet.length)
+    const merge = [...shifted, ...cuttedLetters]
+
+    let indexes = []
+
+    value.toUpperCase().split('').map((value) => merge.map((element, mergeIndex) => {
+      return value === element ? indexes.push(mergeIndex) : null
+    }))
+
+    setResult('')
+
+    for (let i = 0; i < indexes.length; i += 1) {
+      setResult(prevRes => prevRes + alphabet[indexes[i]])
+    }
+
+  }
+
   return (
     <div className='encrypt'>
       <div className='encrypt__wrapper'>
-        <select className='encrypt__section'>
+        <select className='encrypt__section'
+          value={cryptAction}
+          onChange={event => {
+            setCryptAction(event.target.value)
+          }}
+        >
           <option value="encrypt">encrypt</option>
           <option value="decrypt">decrypt</option>
         </select>
@@ -54,9 +80,18 @@ const CaesarCipher = () => {
                 />
               </div>
               <button
-                onClick={() => compare(rotate, inputValue)}
+                onClick={() => {
+                  cryptAction === 'encrypt' ?
+                    encrypt(rotate, inputValue, latin_alphabet) :
+                    decrypt(rotate, inputValue, latin_alphabet)
+                }}
                 className='encrypt__wrapper__button'
-              > encrypt
+              >
+                {
+                  cryptAction === 'encrypt' ?
+                  'encrypt' : 
+                  'decrypt'
+                }
               </button>
             </div>
           </div>
@@ -70,7 +105,7 @@ const CaesarCipher = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 
