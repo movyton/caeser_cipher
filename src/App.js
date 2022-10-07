@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { latin_script_letters } from './alpabet_store'
+import { latin_script_letters } from './data/alpabet_store'
 import CaesarCipher from './components/CaesarCipher';
 
-function App() {  
+function App() {
 
   return (
     <div className="App">
-      <CaesarCipher/>
+      <CaesarCipher />
     </div>
   );
 }

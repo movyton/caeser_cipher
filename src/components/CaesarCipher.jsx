@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
-import { latin_alphabet } from "../alpabet_store";
+import { latin_alphabet } from "../data/alpabet_store";
+import encrypt from '../cryptFunctions/encrypt'
+import decrypt from "../cryptFunctions/decrypt";
 
 const CaesarCipher = () => {
 
@@ -8,44 +10,6 @@ const CaesarCipher = () => {
   const [inputValue, setInputValue] = useState('')
   const [result, setResult] = useState('')
   const [cryptAction, setCryptAction] = useState('encrypt')
-
-  const encrypt = (rotate_by, value, alphabet) => {
-    const cuttedLetters = alphabet.slice(0, rotate_by)
-    const shifted = alphabet.slice(rotate_by, alphabet.length)
-    const merge = [...shifted, ...cuttedLetters]
-
-    let indexes = []
-
-    value.toUpperCase().split('').map((value) => alphabet.map((element, latinIndex) => {
-      return value === element ? indexes.push(latinIndex) : null
-    }))
-
-    setResult('')
-
-    for (let i = 0; i < indexes.length; i += 1) {
-      setResult(prevRes => prevRes + merge[indexes[i]])
-    }
-
-  }
-
-  const decrypt = (rotate_by, value, alphabet) => {
-    const cuttedLetters = alphabet.slice(0, rotate_by)
-    const shifted = alphabet.slice(rotate_by, alphabet.length)
-    const merge = [...shifted, ...cuttedLetters]
-
-    let indexes = []
-
-    value.toUpperCase().split('').map((value) => merge.map((element, mergeIndex) => {
-      return value === element ? indexes.push(mergeIndex) : null
-    }))
-
-    setResult('')
-
-    for (let i = 0; i < indexes.length; i += 1) {
-      setResult(prevRes => prevRes + alphabet[indexes[i]])
-    }
-
-  }
 
   return (
     <div className='encrypt'>
@@ -82,15 +46,16 @@ const CaesarCipher = () => {
               <button
                 onClick={() => {
                   cryptAction === 'encrypt' ?
-                    encrypt(rotate, inputValue, latin_alphabet) :
-                    decrypt(rotate, inputValue, latin_alphabet)
-                }}
+                    encrypt(rotate, inputValue, latin_alphabet, setResult) :
+                    decrypt(rotate, inputValue, latin_alphabet, setResult)
+                }
+                }
                 className='encrypt__wrapper__button'
               >
                 {
                   cryptAction === 'encrypt' ?
-                  'encrypt' : 
-                  'decrypt'
+                    'encrypt' :
+                    'decrypt'
                 }
               </button>
             </div>
